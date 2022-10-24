@@ -1,0 +1,45 @@
+[extension_name]
+String Parser
+[extension_info]
+Help parse HTML coded strings into usable strings
+[insert_external]
+[insert_command]
+SAMMI.extCommand('Parse String', 3355443, 52, {	
+    'inputVariable': ['Input Variable', 14, ''],    
+    'outputVariable': ['Output Variable (leave blank for same variable)', 14, ''],    
+    'button_id': ['Button ID (leave blank for current button)', 14, '']
+	});
+[insert_hook]
+case "Parse String": {
+	ParseString(SAMMIJSON.inputVariable, SAMMIJSON.outputVariable, SAMMIJSON.button_id, SAMMIJSON.FromButton);
+} break
+[insert_script]
+function ParseString(inputVariable, outputVariable, button_id, btn) 
+{		
+    SAMMI.getVariable(inputVariable, btn)
+    .then(stringText => {
+        
+        var text = decodeString(stringText.Value);
+
+        if (button_id == "")
+        {
+            button_id = btn;
+        }
+
+        if (outputVariable == "")
+        {
+            outputVariable = inputVariable;
+        }
+
+        SAMMI.setVariable(outputVariable, text, button_id);
+    })
+    .catch(error => SAMMI.alert('Parser Error ' + error));	
+}
+
+function decodeString(inputString) {
+    var textarea = document.createElement("textarea");
+    textarea.innerHTML = inputString;
+    return textarea.value;
+}
+
+[insert_over]
